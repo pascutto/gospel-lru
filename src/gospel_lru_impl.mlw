@@ -1,5 +1,6 @@
 module Table
   use mach.int.Int63
+  use option.Option
   use ocaml.Pervasives
   use map.Map
   use fmap.Fmap
@@ -17,7 +18,7 @@ module Table
   val mem (m: t 'v) (k: key) : bool
     ensures { result <-> mem k m }
 
-  val add (m: t 'v) (k: key) (v: 'v) : unit
+  val replace (m: t 'v) (k: key) (v: 'v) : unit
     writes  { m }
     ensures { m = add k v (old m) }
 
@@ -26,6 +27,10 @@ module Table
     ensures { result = m[k] }
     raises  { Not_found ->  not (S.mem k m.domain) }
 
+  val function find_opt (m: t 'v) (k: key) : option 'v
+    ensures { S.mem k m.domain }
+    ensures { result = if S.mem k m.domain then Some m[k] else None }
+
   val remove (m: t 'v) (k: key) : unit
     writes  { m }
     ensures { m = remove k (old m) }
@@ -33,6 +38,9 @@ module Table
   val clear (m: t 'v) : unit
     writes  { m }
     ensures { m = empty }
+
+  val function bindings (m: t 'v) : int
+    ensures { result = size m }
 end
   
 module DLList
@@ -175,8 +183,11 @@ module DLList
   let get t i
   = t.contents[i]
   
-  let length t
+  let function length t
   = t.size
+  
+  val function mem (t: t 'a) (v: 'a) : bool
+  ensures { result <-> exists i. t.contents[i] = v}
 end
 
 module Impl
@@ -191,7 +202,8 @@ module Impl
  
     scope K
       type key
-      val equal (_: key) (_: key) : bool
+      val equal (k: key) (k': key) : bool
+      ensures { result <-> k = k' }
       val witness () : key
     end
     
@@ -205,7 +217,20 @@ module Impl
       mutable ghost age: K.key -> int63
     }
     invariant { cap > 0 }
+    invariant { forall k. assoc k = match H.find_opt tbl k with 
+      | None -> None 
+      | Some (_, v) -> Some v 
+    end }
+    invariant { DLList.length lst = H.bindings tbl }
     invariant { forall k. age k >= cap <-> assoc k = None }
+
+    by {
+      tbl = H.create 0;
+      lst = DLList.create (K.witness ()) 1;
+      cap = 1;
+      assoc = (fun _ -> None);
+      age = (fun _ -> 1);
+    }
 
     let unsafe_v (c: int63)
       requires { c > 0 }
@@ -233,6 +258,9 @@ module Impl
     let clear (t: t 'a) 
       ensures { forall k. t.assoc k = None }
     =
+    t.assoc <- (fun _ -> None);
+    let c = t.cap in
+    t.age <- (fun _ -> c);
     H.clear t.tbl;
     DLList.clear t.lst
 
@@ -240,7 +268,7 @@ module Impl
       ensures { result = true <-> forall k. t.assoc k = None }
     = DLList.length t.lst = 0
 
-    let capacity t 
+    let capacity t
       ensures { result = t.cap }  
     = t.cap
     
@@ -262,41 +290,48 @@ module Impl
     try Some (find k t) with Not_found -> None end
       
     let add (k: K.key) (v: 'a) (t: t 'a) : unit 
+    ensures { t.assoc k = Some v }
+    ensures { forall k', v'.
+      k <> k' -> t.assoc k' = Some v' -> (old t).assoc k' = Some v' }
+    ensures { forall k'. age t k' =
+      if k = k' then 0
+      else if age (old t) k' < age (old t) k then age (old t) k' + 1
+      else age (old t) k' }
     =
-    try
-      let index, _value = H.find t.tbl k in
+    let old_assoc = t.assoc in
+    match H.find_opt t.tbl k with
+    | Some (index, _value) ->
       let new_index = DLList.promote t.lst index in
-      H.add t.tbl k (new_index, v) 
-    with Not_found ->
+      H.replace t.tbl k (new_index, v);
+      t.assoc <- (fun x -> if K.equal k x then Some v else old_assoc x);
+    | None -> (
       let index, removed = DLList.append t.lst k in
       match removed with
-      | None -> ()
-      | Some key -> H.remove t.tbl key
+      | None -> t.assoc <- (fun x -> if K.equal k x then Some v else old_assoc x);
+      | Some key -> (
+        H.remove t.tbl key;
+        t.assoc <- (fun x ->
+          if K.equal k x then Some v
+          else if K.equal key x then None  
+          else old_assoc x))
       end;
-      H.add t.tbl k (index, v)
-    end
+      H.replace t.tbl k (index, v));
+    end;
+    let old_age = t.age in
+    assert { old_age = (old t).age };
+    t.age <- (fun k' -> 
+      if K.equal k k' then Int63.zero
+      else if old_age k' < old_age k then old_age k' + 1
+      else old_age k')
   end
 end
+
 (*
 module Correct
 
   use Impl as L
 
-  clone Lru.Sig with
-     type Make.K.key = L.Make.K.key,
-     val Make.K.equal = L.Make.K.equal,
-     val Make.K.witness = L.Make.K.witness,
-
-     type Make.H.t = L.Make.H.t,
-     val Make.H.create = L.Make.H.create,
-     val Make.H.mem = L.Make.H.mem,
-     val Make.H.is_empty = L.Make.H.is_empty,
-     val Make.H.add = L.Make.H.add,
-     val Make.H.find = L.Make.H.find,
-     val Make.H.find_exn = L.Make.H.find_exn,
-     val Make.H.remove = L.Make.H.remove,
-     val Make.H.clear = L.Make.H.clear,
- 
+  clone gospel_lru.Sig with
      type Make.t = L.Make.t,
      val Make.v = L.Make.v,
      val Make.clear = L.Make.clear,
