@@ -74,13 +74,16 @@ module DLList
               = Array63.length age
               = cap }
   
-  invariant { cap >= 1 }
+  invariant { cap >= 2 }
   invariant { 0 <= size <= cap }
   
   invariant { size <> 0 -> cap - size <= first < cap /\ cap - size <= last < cap }
   
   invariant { forall i.          cap - size <= i < cap -> occupied[i] = true }
   invariant { forall i. 0 <= i < cap - size            -> occupied[i] = false }
+  
+  invariant { forall i. cap - size <= i < cap -> i <> last -> next[i] <> i }
+  invariant { forall i. cap - size <= i < cap -> i <> first -> prev[i] <> i }
   
   invariant { forall i. cap - size <= i < cap -> i <> last -> cap - size <= next[i] < cap }
   invariant { forall i. cap - size <= i < cap -> i <> first -> cap - size <= prev[i] < cap }
@@ -90,24 +93,28 @@ module DLList
   invariant { size <> 0 -> occupied[last] = true }
   invariant { size <> 0 -> occupied[first] = true }
   
+  invariant { forall i. cap - size <= i < cap -> i <> first -> next[prev[i]] = i }
+  invariant { forall i. cap - size <= i < cap -> i <> last -> prev[next[i]] = i }
+  
   invariant { forall i. cap - size <= i < cap -> age[i] < cap }
+  invariant { cap - size <= first < cap -> age[first] = 0 }
   invariant { forall i. cap - size <= i < cap -> i <> first -> age[prev[i]] = age[i] - 1 }
   invariant { forall i. cap - size <= i < cap -> i <> last -> age[next[i]] = age[i] + 1 }
   by {
-    contents = Array63.make 1 (any 'a);
+    contents = Array63.make 2 (any 'a);
     witness = any 'a;
-    prev = Array63.make 1 (-1);
-    next = Array63.make 1 (-1);
+    prev = Array63.init 2 (fun _ -> Int63.zero);
+    next = Array63.init 2 (fun _ -> Int63.one);
     first = 0;
-    last = 0;
-    cap = 1;
-    size = 1;
-    occupied = Array63.make 1 true;
-    age = Array63.make 1 0;
+    last = 1;
+    cap = 2;
+    size = 2;
+    occupied = Array63.make 2 true;
+    age = Array63.init 2 (fun i -> to_int i);
   }
   
   let create witness (c: int63) : t 'a
-  requires { c >= 1 }
+  requires { c >= 2 }
   ensures { result.size = 0 }
   =
   {
@@ -149,7 +156,7 @@ module DLList
       None
     )
     else if t.size < t.cap then (
-      let index = t.first - 1 in
+      let index = t.cap - t.size - 1 in
       t.contents[index] <- v;
       t.occupied[index] <- true;
       t.next[index] <- t.first;
@@ -179,20 +186,20 @@ module DLList
   in
   t.first, removed
   
-  let promote t i
+  let promote (t: t 'a) (i: int63) : int63
     requires { t.cap - t.size <= i < t.cap }
     ensures { t.size = (old t).size }
     ensures { t.cap - t.size <= result < t.cap } 
   =
-  t.next[t.prev[i]] <- t.next[i];
-  t.prev[t.next[i]] <- t.prev[i];
+  if i = t.first then return i;
+  if i <> t.last (* && i <> t.first *) then (
+    t.next[t.prev[i]] <- t.next[i];
+    t.prev[t.next[i]] <- t.prev[i]);
   t.prev[t.first] <- i;
   t.next[i] <- t.first;
-  t.prev[i] <- -1;
   t.first <- i;
-  t.age[i] <- 0;
   for j = t.cap - t.size to t.cap - 1 do
-    t.age[i] <- if i = j then 0 else t.age[i] + 1 
+    t.age[j] <- if j = t.first then 0 else t.age[j] + 1 
   done;
   t.first
 
