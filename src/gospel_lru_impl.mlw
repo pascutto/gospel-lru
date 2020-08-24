@@ -4,7 +4,7 @@ module Table
   use ocaml.Pervasives
   use map.Map
   use fmap.Fmap
-  
+
   type key
 
   type t 'v = abstract {
@@ -40,14 +40,9 @@ module Table
 
   val function length (m: t 'v) : int
     ensures { result = size m }
-    
-  lemma length_empty:
-    forall m: t 'v. size m = 0 <-> m = empty
-    
-  lemma length_nonempty:
-    forall m: t 'v. size m <> 0 <-> exists k. mem k m
+
 end
-  
+
 module DLList
   use int.Int
   use mach.int.Int63
@@ -67,38 +62,38 @@ module DLList
     ghost occupied : array bool;
     ghost age : array int;
   }
-  invariant { Array63.length contents 
-              = Array63.length prev 
-              = Array63.length next 
-              = Array63.length occupied 
+  invariant { Array63.length contents
+              = Array63.length prev
+              = Array63.length next
+              = Array63.length occupied
               = Array63.length age
               = cap }
-  
+
   invariant { cap >= 2 }
   invariant { 0 <= size <= cap }
-  
+
   invariant { size <> 0 -> cap - size <= first < cap /\ cap - size <= last < cap }
-  
+
   invariant { forall i.          cap - size <= i < cap -> occupied[i] = true }
   invariant { forall i. 0 <= i < cap - size            -> occupied[i] = false }
-  
+
   invariant { forall i. cap - size <= i < cap -> i <> last -> next[i] <> i }
   invariant { forall i. cap - size <= i < cap -> i <> first -> prev[i] <> i }
-  
+
   invariant { forall i. cap - size <= i < cap -> i <> last -> cap - size <= next[i] < cap }
   invariant { forall i. cap - size <= i < cap -> i <> first -> cap - size <= prev[i] < cap }
-  
+
   invariant { forall i. 0 <= i < cap - size -> contents[i] = witness }
 
   invariant { size <> 0 -> occupied[last] = true }
   invariant { size <> 0 -> occupied[first] = true }
-  
+
   invariant { forall i. cap - size <= i < cap -> next[i] <> i }
   invariant { forall i. cap - size <= i < cap -> prev[i] <> i }
-  
+
   invariant { forall i. cap - size <= i < cap -> i <> first -> next[prev[i]] = i }
   invariant { forall i. cap - size <= i < cap -> i <> last -> prev[next[i]] = i }
-  
+
   invariant { forall i. cap - size <= i < cap -> age[i] < cap }
   invariant { cap - size <= first < cap -> age[first] = 0 }
   invariant { forall i. cap - size <= i < cap -> i <> first -> age[prev[i]] = age[i] - 1 }
@@ -115,7 +110,7 @@ module DLList
     occupied = Array63.make 2 true;
     age = Array63.init 2 (fun i -> to_int i);
   }
-  
+
   let create witness (c: int63) : t 'a
   requires { c >= 2 }
   ensures { result.size = 0 }
@@ -132,7 +127,7 @@ module DLList
     occupied = Array63.make c false;
     age = Array63.make c (to_int c);
   }
-  
+
   let clear t
   ensures { t.size = 0 }
   =
@@ -144,7 +139,7 @@ module DLList
     t.occupied[i] <- false;
     t.age[i] <- to_int t.cap;
   done
-  
+
   let append t v
   ensures { t.size >= (old t).size }
   =
@@ -188,11 +183,11 @@ module DLList
     )
   in
   t.first, removed
-  
+
   let promote (t: t 'a) (i: int63) : int63
     requires { t.cap - t.size <= i < t.cap }
     ensures { t.size = (old t).size }
-    ensures { t.cap - t.size <= result < t.cap } 
+    ensures { t.cap - t.size <= result < t.cap }
   =
   if i = t.first then return i;
   if i <> t.last (* && i <> t.first *) then (
@@ -205,17 +200,17 @@ module DLList
   t.next[i] <- t.first;
   t.first <- i;
   for j = t.cap - t.size to t.cap - 1 do
-    t.age[j] <- if j = t.first then 0 else t.age[j] + 1 
+    t.age[j] <- if j = t.first then 0 else t.age[j] + 1
   done;
   t.first
 
   let get t i
     requires { t.cap - t.size <= i < t.cap }
   = t.contents[i]
-  
+
   let function length t
   = t.size
-  
+
   val function mem (t: t 'a) (v: 'a) : bool
   ensures { result <-> exists i. t.contents[i] = v}
 end
@@ -227,18 +222,19 @@ module Impl
   use mach.int.Int63
   use option.Option
   use ocaml.Pervasives
+  use fmap.Fmap
 
   scope Make
- 
+
     scope K
       type key
       val equal (k: key) (k': key) : bool
       ensures { result <-> k = k' }
       val witness () : key
     end
-    
+
     clone Table as H with type key = K.key
-  
+
     type t 'a = {
       tbl: H.t (int63, 'a);
       lst: DLList.t K.key;
@@ -247,11 +243,11 @@ module Impl
       mutable ghost age: K.key -> int
     }
     invariant { cap > 0 }
-    invariant { forall k. assoc k = match H.find_opt tbl k with 
-      | None -> None 
-      | Some (_, v) -> Some v 
+    invariant { forall k. match assoc k with
+      | None -> not S.mem k tbl.domain
+      | Some v -> S.mem k tbl.domain && let _, v' = tbl k in v = v'
     end }
-    invariant { DLList.length lst = H.length tbl }
+    invariant { DLList.length lst = size tbl }
     invariant { forall k. age k >= cap <-> assoc k = None }
     by {
       tbl = H.create 0;
@@ -271,10 +267,10 @@ module Impl
       tbl = H.create c;
       lst = DLList.create witness c;
       cap = c;
-      assoc = (fun _ -> None); 
+      assoc = (fun _ -> None);
       age = (fun _ -> to_int c)
     }
-      
+
     let v (c: int63) : t 'a
       raises { Invalid_argument _ -> c <= 0 }
       ensures { forall k. result.assoc k = None }
@@ -283,7 +279,7 @@ module Impl
     if c <= 0 then raise Invalid_argument "capacity must be strictly positive";
     unsafe_v c
 
-    let clear (t: t 'a) 
+    let clear (t: t 'a)
       ensures { forall k. t.assoc k = None }
     =
     t.assoc <- (fun _ -> None);
@@ -294,32 +290,30 @@ module Impl
 
     let is_empty (t: t 'a)
       ensures { result <-> forall k. t.assoc k = None }
-    = 
-    let res = H.length t.tbl = 0 in
-    assert { res -> forall k. H.find_opt t.tbl k = None };
-    res
+    =
+      H.length t.tbl = 0
 
     let capacity t
-      ensures { result = t.cap }  
+      ensures { result = t.cap }
     = t.cap
-    
-    let mem (k: K.key) (t: t 'a) : bool 
+
+    let mem (k: K.key) (t: t 'a) : bool
       ensures { result <-> t.assoc k <> None }
     = match H.find_opt t.tbl k with None -> false | Some _ -> true end
 
     let find (k: K.key) (t: t 'a) : 'a
       ensures { Some result = t.assoc k }
       raises { Not_found -> t.assoc k = None }
-    = 
+    =
     let _index, value = H.find t.tbl  k in
     value
-    
-    let find_opt (k: K.key) (t: t 'a) : option 'a 
+
+    let find_opt (k: K.key) (t: t 'a) : option 'a
       ensures { result = t.assoc k }
     =
     try Some (find k t) with Not_found -> None end
-      
-    let add (k: K.key) (v: 'a) (t: t 'a) : unit 
+
+    let add (k: K.key) (v: 'a) (t: t 'a) : unit
     ensures { t.assoc k = Some v }
     ensures { forall k', v'.
       k <> k' -> t.assoc k' = Some v' -> (old t).assoc k' = Some v' }
@@ -342,13 +336,13 @@ module Impl
         H.remove t.tbl key;
         t.assoc <- (fun x ->
           if K.equal k x then Some v
-          else if K.equal key x then None  
+          else if K.equal key x then None
           else old_assoc x))
       end;
       H.replace t.tbl k (index, v));
     end;
     let old_age = t.age in
-    t.age <- (fun k' -> 
+    t.age <- (fun k' ->
       if K.equal k k' then 0
       else if old_age k' < old_age k then old_age k' + 1
       else old_age k')
