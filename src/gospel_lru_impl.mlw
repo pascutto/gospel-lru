@@ -93,6 +93,9 @@ module DLList
   invariant { size <> 0 -> occupied[last] = true }
   invariant { size <> 0 -> occupied[first] = true }
   
+  invariant { forall i. cap - size <= i < cap -> next[i] <> i }
+  invariant { forall i. cap - size <= i < cap -> prev[i] <> i }
+  
   invariant { forall i. cap - size <= i < cap -> i <> first -> next[prev[i]] = i }
   invariant { forall i. cap - size <= i < cap -> i <> last -> prev[next[i]] = i }
   
@@ -193,8 +196,11 @@ module DLList
   =
   if i = t.first then return i;
   if i <> t.last (* && i <> t.first *) then (
-    t.next[t.prev[i]] <- t.next[i];
-    t.prev[t.next[i]] <- t.prev[i]);
+    let prev_i = t.prev[i] in
+    let next_i = t.next[i] in
+    t.next[prev_i] <- next_i;
+    t.prev[next_i] <- prev_i;
+    assert { t.next[prev_i] = next_i });
   t.prev[t.first] <- i;
   t.next[i] <- t.first;
   t.first <- i;
