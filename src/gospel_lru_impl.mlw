@@ -138,6 +138,7 @@ module DLList
   let append (t: t 'a) (v: 'a) : (int63, option 'a)
     ensures { t.size >= (old t).size }
     returns { i, _ -> forall j. t.age j = if j = i then 0 else old (t.age j) + 1 }
+    returns { i, _ -> t.cap - t.size <= i < t.cap }
   =
   let removed =
     if t.size = 0 then (
@@ -259,8 +260,11 @@ module Impl
       | None -> not mem k tbl
       | Some v -> mem k tbl && let _, v' = tbl k in v = v'
     end }
-    invariant { DLList.size lst = size tbl }
+    (*invariant { DLList.size lst = size tbl }*)
     invariant { forall k. age k >= cap <-> assoc k = None }
+    invariant { forall k. mem k tbl -> 
+      let i, _ = tbl k in DLList.cap lst - DLList.size lst <= i < DLList.cap lst 
+    }
     by {
       tbl = H.create 0;
       lst = DLList.create K.witness 2;
