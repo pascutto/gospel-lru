@@ -60,13 +60,12 @@ module DLList
     cap: int63;
     mutable size: int63;
     ghost occupied : array bool;
-    ghost age : array int;
+    mutable ghost age : int63 -> int;
   }
   invariant { Array63.length contents
               = Array63.length prev
               = Array63.length next
               = Array63.length occupied
-              = Array63.length age
               = cap }
 
   invariant { cap >= 2 }
@@ -77,9 +76,6 @@ module DLList
   invariant { forall i.          cap - size <= i < cap -> occupied[i] = true }
   invariant { forall i. 0 <= i < cap - size            -> occupied[i] = false }
 
-  invariant { forall i. cap - size <= i < cap -> i <> last -> next[i] <> i }
-  invariant { forall i. cap - size <= i < cap -> i <> first -> prev[i] <> i }
-
   invariant { forall i. cap - size <= i < cap -> i <> last -> cap - size <= next[i] < cap }
   invariant { forall i. cap - size <= i < cap -> i <> first -> cap - size <= prev[i] < cap }
 
@@ -87,17 +83,15 @@ module DLList
 
   invariant { size <> 0 -> occupied[last] = true }
   invariant { size <> 0 -> occupied[first] = true }
-
-  invariant { forall i. cap - size <= i < cap -> next[i] <> i }
-  invariant { forall i. cap - size <= i < cap -> prev[i] <> i }
-
+  
   invariant { forall i. cap - size <= i < cap -> i <> first -> next[prev[i]] = i }
   invariant { forall i. cap - size <= i < cap -> i <> last -> prev[next[i]] = i }
-
-  invariant { forall i. cap - size <= i < cap -> age[i] < cap }
-  invariant { cap - size <= first < cap -> age[first] = 0 }
-  invariant { forall i. cap - size <= i < cap -> i <> first -> age[prev[i]] = age[i] - 1 }
-  invariant { forall i. cap - size <= i < cap -> i <> last -> age[next[i]] = age[i] + 1 }
+  
+  invariant { cap - size <= first < cap -> age first = 0 }
+  invariant { cap - size <= first < cap -> age last = size - 1 }
+  invariant { forall i: int63. cap - size <= i < cap -> 0 <= age i < size }
+  invariant { forall i: int63. cap - size <= i < cap -> i <> first -> age (prev[i]) = age i - 1 }
+  invariant { forall i: int63. cap - size <= i < cap -> i <> last -> age (next[i]) = age i + 1 }
   by {
     contents = Array63.make 2 (any 'a);
     witness = any 'a;
@@ -108,7 +102,7 @@ module DLList
     cap = 2;
     size = 2;
     occupied = Array63.make 2 true;
-    age = Array63.init 2 (fun i -> to_int i);
+    age = (fun i -> to_int i);
   }
 
   let create witness (c: int63) : t 'a
@@ -125,19 +119,20 @@ module DLList
     cap = c;
     size = 0;
     occupied = Array63.make c false;
-    age = Array63.make c (to_int c);
+    age = (fun _ -> to_int c);
   }
 
   let clear t
   ensures { t.size = 0 }
   =
   t.size <- 0;
+  let current_cap = t.cap in
+  t.age <- (fun _ -> to_int current_cap);
   for i = 0 to t.cap - 1 do
     invariant { forall j. 0 <= j < i -> t.occupied[j] = false }
     invariant { forall j. 0 <= j < i -> t.contents[j] = t.witness }
     t.contents[i] <- t.witness;
     t.occupied[i] <- false;
-    t.age[i] <- to_int t.cap;
   done
 
   let append t v
@@ -188,23 +183,32 @@ module DLList
     requires { t.cap - t.size <= i < t.cap }
     ensures { t.size = (old t).size }
     ensures { t.cap - t.size <= result < t.cap }
+    ensures { forall k: int63. t.cap - t.size <= k < t.cap ->
+    age t k =
+      if k = i then 0
+      else if age (old t) k < age (old t) k then age (old t) k + 1
+      else age (old t) k }
   =
   if i = t.first then return i;
   if i <> t.last (* && i <> t.first *) then (
     let prev_i = t.prev[i] in
     let next_i = t.next[i] in
     t.next[prev_i] <- next_i;
-    t.prev[next_i] <- prev_i;
-    assert { t.next[prev_i] = next_i });
+    t.prev[next_i] <- prev_i
+  );
   t.prev[t.first] <- i;
   t.next[i] <- t.first;
+  assert { t.prev[t.next[i]] = i };
   t.first <- i;
-  for j = t.cap - t.size to t.cap - 1 do
-    t.age[j] <- if j = t.first then 0 else t.age[j] + 1
-  done;
+  let old_age = t.age in
+  assert { forall i: int63. t.cap - t.size <= i < t.cap -> 0 <= old_age i };
+  t.age <- (fun j -> if j = i then 0
+            else if old_age j < old_age i then old_age j + 1
+            else old_age j);
+  assert { forall i: int63. t.cap - t.size <= i < t.cap -> 0 <= t.age i }; 
   t.first
 
-  let get t i
+  let get (t: t 'a) (i: int63) : 'a
     requires { t.cap - t.size <= i < t.cap }
   = t.contents[i]
 
@@ -230,7 +234,7 @@ module Impl
       type key
       val equal (k: key) (k': key) : bool
       ensures { result <-> k = k' }
-      val witness () : key
+      val witness : key
     end
 
     clone Table as H with type key = K.key
@@ -251,32 +255,31 @@ module Impl
     invariant { forall k. age k >= cap <-> assoc k = None }
     by {
       tbl = H.create 0;
-      lst = DLList.create (K.witness ()) 1;
-      cap = 1;
+      lst = DLList.create K.witness 2;
+      cap = 2;
       assoc = (fun _ -> None);
-      age = (fun _ -> 1);
+      age = (fun _ -> 2);
     }
 
     let unsafe_v (c: int63)
-      requires { c > 0 }
+      requires { c >= 2 }
       ensures { forall k. result.assoc k = None }
       ensures { result.cap = c }
     =
-    let witness = K.witness () in
     {
       tbl = H.create c;
-      lst = DLList.create witness c;
+      lst = DLList.create K.witness c;
       cap = c;
       assoc = (fun _ -> None);
       age = (fun _ -> to_int c)
     }
 
     let v (c: int63) : t 'a
-      raises { Invalid_argument _ -> c <= 0 }
+      raises { Invalid_argument _ -> c < 2 }
       ensures { forall k. result.assoc k = None }
       ensures { result.cap = c }
     =
-    if c <= 0 then raise Invalid_argument "capacity must be strictly positive";
+    if c < 2 then raise Invalid_argument "capacity must be strictly positive";
     unsafe_v c
 
     let clear (t: t 'a)
