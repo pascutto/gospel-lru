@@ -38,14 +38,15 @@ module Table
     writes  { m }
     ensures { m = empty }
 
-  val function length (m: t 'v) : int
-    ensures { result = size m }
+  val length (m: t 'v) : int
+    ensures { result = 0 <-> is_empty m }
 
 end
 
 module DLList
   use int.Int
   use mach.int.Int63
+  use map.Map
   use seq.Seq
   use mach.array.Array63
   use option.Option
@@ -59,13 +60,12 @@ module DLList
     mutable last: int63;
     cap: int63;
     mutable size: int63;
-    ghost occupied : array bool;
-    mutable ghost age : int63 -> int;
+    mutable ghost occupied : int -> bool;
+    mutable ghost age : int -> int;
   }
   invariant { Array63.length contents
               = Array63.length prev
               = Array63.length next
-              = Array63.length occupied
               = cap }
 
   invariant { cap >= 2 }
@@ -73,25 +73,26 @@ module DLList
 
   invariant { size <> 0 -> cap - size <= first < cap /\ cap - size <= last < cap }
 
-  invariant { forall i.          cap - size <= i < cap -> occupied[i] = true }
-  invariant { forall i. 0 <= i < cap - size            -> occupied[i] = false }
+  invariant { forall i.          cap - size <= i < cap -> occupied i = true }
+  invariant { forall i. 0 <= i < cap - size            -> occupied i = false }
 
   invariant { forall i. cap - size <= i < cap -> i <> last -> cap - size <= next[i] < cap }
   invariant { forall i. cap - size <= i < cap -> i <> first -> cap - size <= prev[i] < cap }
 
   invariant { forall i. 0 <= i < cap - size -> contents[i] = witness }
 
-  invariant { size <> 0 -> occupied[last] = true }
-  invariant { size <> 0 -> occupied[first] = true }
-  
+  invariant { size <> 0 -> occupied last = true }
+  invariant { size <> 0 -> occupied first = true }
+
   invariant { forall i. cap - size <= i < cap -> i <> first -> next[prev[i]] = i }
   invariant { forall i. cap - size <= i < cap -> i <> last -> prev[next[i]] = i }
-  
+
   invariant { cap - size <= first < cap -> age first = 0 }
   invariant { cap - size <= first < cap -> age last = size - 1 }
-  invariant { forall i: int63. cap - size <= i < cap -> 0 <= age i < size }
-  invariant { forall i: int63. cap - size <= i < cap -> i <> first -> age (prev[i]) = age i - 1 }
-  invariant { forall i: int63. cap - size <= i < cap -> i <> last -> age (next[i]) = age i + 1 }
+  invariant { forall i. cap - size <= i < cap -> 0 <= age i < size }
+  invariant { forall i j. cap - size <= i < cap -> cap - size <= j < cap -> i <> j -> age i <> age j }
+  invariant { forall i. cap - size <= i < cap -> i <> first -> age (prev[i]) = age i - 1 }
+  invariant { forall i. cap - size <= i < cap -> i <> last -> age (next[i]) = age i + 1 }
   by {
     contents = Array63.make 2 (any 'a);
     witness = any 'a;
@@ -101,8 +102,8 @@ module DLList
     last = 1;
     cap = 2;
     size = 2;
-    occupied = Array63.make 2 true;
-    age = (fun i -> to_int i);
+    occupied = (fun _ -> true);
+    age = (fun i -> i);
   }
 
   let create witness (c: int63) : t 'a
@@ -118,31 +119,31 @@ module DLList
     last = -1;
     cap = c;
     size = 0;
-    occupied = Array63.make c false;
+    occupied = (fun _ -> false);
     age = (fun _ -> to_int c);
   }
 
-  let clear t
+  let clear (t: t 'a) : unit
   ensures { t.size = 0 }
   =
   t.size <- 0;
   let current_cap = t.cap in
   t.age <- (fun _ -> to_int current_cap);
   for i = 0 to t.cap - 1 do
-    invariant { forall j. 0 <= j < i -> t.occupied[j] = false }
     invariant { forall j. 0 <= j < i -> t.contents[j] = t.witness }
     t.contents[i] <- t.witness;
-    t.occupied[i] <- false;
-  done
+  done;
+  t.occupied <- (fun _ -> false)
 
-  let append t v
-  ensures { t.size >= (old t).size }
+  let append (t: t 'a) (v: 'a) : (int63, option 'a)
+    ensures { t.size >= (old t).size }
+    returns { i, _ -> forall j. t.age j = if j = i then 0 else old (t.age j) + 1 }
   =
   let removed =
     if t.size = 0 then (
       let index = t.cap - 1 in
       t.contents[index] <- v;
-      t.occupied[index] <- true;
+      t.occupied <- Map.set t.occupied (to_int index) true;
       t.last <- index;
       t.first <- index;
       t.size <- 1;
@@ -151,7 +152,7 @@ module DLList
     else if t.size < t.cap then (
       let index = t.cap - t.size - 1 in
       t.contents[index] <- v;
-      t.occupied[index] <- true;
+      t.occupied <- Map.set t.occupied (to_int index) true;
       t.next[index] <- t.first;
       t.prev[t.first] <- index;
       t.first <- index;
@@ -177,16 +178,19 @@ module DLList
       removed
     )
   in
+  let old_age = t.age in
+  let f = to_int t.first in
+  t.age <- (fun i -> if i = f then 0 else old_age i + 1);
   t.first, removed
 
   let promote (t: t 'a) (i: int63) : int63
     requires { t.cap - t.size <= i < t.cap }
     ensures { t.size = (old t).size }
     ensures { t.cap - t.size <= result < t.cap }
-    ensures { forall k: int63. t.cap - t.size <= k < t.cap ->
+    ensures { forall k. t.cap - t.size <= k < t.cap ->
     age t k =
       if k = i then 0
-      else if age (old t) k < age (old t) k then age (old t) k + 1
+      else if age (old t) k < age (old t) i then age (old t) k + 1
       else age (old t) k }
   =
   if i = t.first then return i;
@@ -195,25 +199,25 @@ module DLList
     let next_i = t.next[i] in
     t.next[prev_i] <- next_i;
     t.prev[next_i] <- prev_i
+  ) else (
+    t.last <- t.prev[i];
   );
   t.prev[t.first] <- i;
   t.next[i] <- t.first;
   assert { t.prev[t.next[i]] = i };
   t.first <- i;
   let old_age = t.age in
-  assert { forall i: int63. t.cap - t.size <= i < t.cap -> 0 <= old_age i };
-  t.age <- (fun j -> if j = i then 0
-            else if old_age j < old_age i then old_age j + 1
-            else old_age j);
-  assert { forall i: int63. t.cap - t.size <= i < t.cap -> 0 <= t.age i }; 
+  assert { forall i. t.cap - t.size <= i < t.cap -> 0 <= old_age i };
+  let new_age = (fun j -> if j = to_int i then 0
+            else if old_age j < old_age (to_int i) then old_age j + 1
+            else old_age j) in
+  t.age <- new_age;
+  assert { forall i. t.cap - t.size <= i < t.cap -> 0 <= t.age i };
   t.first
 
   let get (t: t 'a) (i: int63) : 'a
     requires { t.cap - t.size <= i < t.cap }
   = t.contents[i]
-
-  let function length t
-  = t.size
 
   val function mem (t: t 'a) (v: 'a) : bool
   ensures { result <-> exists i. t.contents[i] = v}
@@ -247,11 +251,15 @@ module Impl
       mutable ghost age: K.key -> int
     }
     invariant { cap > 0 }
+(*
+    invariant { forall k. if mem k tbl then let _,v = tbl k in assoc k = Some v
+                                       else assoc k = None }
+*)
     invariant { forall k. match assoc k with
-      | None -> not S.mem k tbl.domain
-      | Some v -> S.mem k tbl.domain && let _, v' = tbl k in v = v'
+      | None -> not mem k tbl
+      | Some v -> mem k tbl && let _, v' = tbl k in v = v'
     end }
-    invariant { DLList.length lst = size tbl }
+    invariant { DLList.size lst = size tbl }
     invariant { forall k. age k >= cap <-> assoc k = None }
     by {
       tbl = H.create 0;
@@ -291,7 +299,7 @@ module Impl
     H.clear t.tbl;
     DLList.clear t.lst
 
-    let is_empty (t: t 'a)
+    let is_empty (t: t 'a) : bool
       ensures { result <-> forall k. t.assoc k = None }
     =
       H.length t.tbl = 0
@@ -302,7 +310,10 @@ module Impl
 
     let mem (k: K.key) (t: t 'a) : bool
       ensures { result <-> t.assoc k <> None }
-    = match H.find_opt t.tbl k with None -> false | Some _ -> true end
+    = (* enforce case analysis *)
+      ghost (match t.assoc k with None -> () | Some _ -> () end);
+      H.mem t.tbl k
+
 
     let find (k: K.key) (t: t 'a) : 'a
       ensures { Some result = t.assoc k }
