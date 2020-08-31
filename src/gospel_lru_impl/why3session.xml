@@ -2,10 +2,8 @@
 <!DOCTYPE why3session PUBLIC "-//Why3//proof session v5//EN"
 "http://why3.lri.fr/why3session.dtd">
 <why3session shape_version="6">
-<prover id="0" name="Alt-Ergo" version="2.3.2" timelimit="5" steplimit="0" memlimit="1000"/>
 <prover id="1" name="CVC4" version="1.6" timelimit="1" steplimit="0" memlimit="1000"/>
 <prover id="2" name="Z3" version="4.8.6" timelimit="1" steplimit="0" memlimit="1000"/>
-<prover id="3" name="Alt-Ergo" version="2.3.1" timelimit="1" steplimit="0" memlimit="1000"/>
 <prover id="4" name="Alt-Ergo" version="2.3.3" timelimit="5" steplimit="0" memlimit="1000"/>
 <prover id="5" name="CVC4" version="1.7" timelimit="1" steplimit="0" memlimit="1000"/>
 <prover id="6" name="Alt-Ergo" version="2.3.0" timelimit="1" steplimit="0" memlimit="1000"/>
@@ -96,216 +94,225 @@
   <goal name="append&#39;vc.23" expl="postcondition" proved="true">
   <proof prover="1"><result status="valid" time="0.06" steps="16425"/></proof>
   </goal>
-  <goal name="append&#39;vc.24" expl="integer overflow" proved="true">
-  <proof prover="6"><result status="valid" time="0.02" steps="34"/></proof>
+  <goal name="append&#39;vc.24" expl="postcondition" proved="true">
+  <proof prover="1"><result status="valid" time="0.10" steps="24700"/></proof>
   </goal>
   <goal name="append&#39;vc.25" expl="integer overflow" proved="true">
+  <proof prover="6"><result status="valid" time="0.02" steps="34"/></proof>
+  </goal>
+  <goal name="append&#39;vc.26" expl="integer overflow" proved="true">
   <proof prover="1"><result status="valid" time="0.08" steps="15778"/></proof>
   </goal>
-  <goal name="append&#39;vc.26" expl="index in array bounds" proved="true">
+  <goal name="append&#39;vc.27" expl="index in array bounds" proved="true">
   <proof prover="1"><result status="valid" time="0.08" steps="19991"/></proof>
   </goal>
-  <goal name="append&#39;vc.27" expl="index in array bounds" proved="true">
+  <goal name="append&#39;vc.28" expl="index in array bounds" proved="true">
   <proof prover="1"><result status="valid" time="0.05" steps="22828"/></proof>
   </goal>
-  <goal name="append&#39;vc.28" expl="index in array bounds" proved="true">
+  <goal name="append&#39;vc.29" expl="index in array bounds" proved="true">
   <proof prover="1"><result status="valid" time="0.11" steps="23404"/></proof>
   </goal>
-  <goal name="append&#39;vc.29" expl="integer overflow" proved="true">
+  <goal name="append&#39;vc.30" expl="integer overflow" proved="true">
   <proof prover="1"><result status="valid" time="0.12" steps="20762"/></proof>
   </goal>
-  <goal name="append&#39;vc.30" expl="type invariant" proved="true">
+  <goal name="append&#39;vc.31" expl="type invariant" proved="true">
   <proof prover="6"><result status="valid" time="0.03" steps="156"/></proof>
   </goal>
-  <goal name="append&#39;vc.31" expl="type invariant" proved="true">
+  <goal name="append&#39;vc.32" expl="type invariant" proved="true">
   <proof prover="6"><result status="valid" time="0.03" steps="58"/></proof>
   </goal>
-  <goal name="append&#39;vc.32" expl="type invariant" proved="true">
+  <goal name="append&#39;vc.33" expl="type invariant" proved="true">
   <proof prover="6"><result status="valid" time="0.03" steps="60"/></proof>
   </goal>
-  <goal name="append&#39;vc.33" expl="type invariant" proved="true">
+  <goal name="append&#39;vc.34" expl="type invariant" proved="true">
   <proof prover="6"><result status="valid" time="0.03" steps="66"/></proof>
   </goal>
-  <goal name="append&#39;vc.34" expl="type invariant" proved="true">
+  <goal name="append&#39;vc.35" expl="type invariant" proved="true">
   <proof prover="6"><result status="valid" time="0.04" steps="200"/></proof>
   </goal>
-  <goal name="append&#39;vc.35" expl="type invariant" proved="true">
+  <goal name="append&#39;vc.36" expl="type invariant" proved="true">
   <proof prover="6"><result status="valid" time="0.11" steps="163"/></proof>
   </goal>
-  <goal name="append&#39;vc.36" expl="type invariant" proved="true">
+  <goal name="append&#39;vc.37" expl="type invariant" proved="true">
   <proof prover="5"><result status="valid" time="0.25" steps="37685"/></proof>
   </goal>
-  <goal name="append&#39;vc.37" expl="type invariant" proved="true">
+  <goal name="append&#39;vc.38" expl="type invariant" proved="true">
   <proof prover="5"><result status="valid" time="0.21" steps="37985"/></proof>
   </goal>
-  <goal name="append&#39;vc.38" expl="type invariant" proved="true">
-  <proof prover="6"><result status="valid" time="0.13" steps="369"/></proof>
-  </goal>
   <goal name="append&#39;vc.39" expl="type invariant" proved="true">
-  <proof prover="6"><result status="valid" time="0.03" steps="72"/></proof>
+  <proof prover="6"><result status="valid" time="0.13" steps="369"/></proof>
   </goal>
   <goal name="append&#39;vc.40" expl="type invariant" proved="true">
   <proof prover="6"><result status="valid" time="0.03" steps="72"/></proof>
   </goal>
   <goal name="append&#39;vc.41" expl="type invariant" proved="true">
-  <proof prover="6"><result status="valid" time="0.20" steps="370"/></proof>
+  <proof prover="6"><result status="valid" time="0.03" steps="72"/></proof>
   </goal>
   <goal name="append&#39;vc.42" expl="type invariant" proved="true">
-  <proof prover="5"><result status="valid" time="0.38" steps="87178"/></proof>
+  <proof prover="6"><result status="valid" time="0.20" steps="370"/></proof>
   </goal>
   <goal name="append&#39;vc.43" expl="type invariant" proved="true">
-  <proof prover="6"><result status="valid" time="0.03" steps="74"/></proof>
+  <proof prover="5"><result status="valid" time="0.38" steps="87178"/></proof>
   </goal>
   <goal name="append&#39;vc.44" expl="type invariant" proved="true">
-  <proof prover="6"><result status="valid" time="0.05" steps="208"/></proof>
+  <proof prover="6"><result status="valid" time="0.03" steps="74"/></proof>
   </goal>
   <goal name="append&#39;vc.45" expl="type invariant" proved="true">
-  <proof prover="6"><result status="valid" time="0.23" steps="605"/></proof>
+  <proof prover="6"><result status="valid" time="0.05" steps="208"/></proof>
   </goal>
   <goal name="append&#39;vc.46" expl="type invariant" proved="true">
-  <proof prover="6"><result status="valid" time="0.37" steps="868"/></proof>
+  <proof prover="6"><result status="valid" time="0.23" steps="605"/></proof>
   </goal>
   <goal name="append&#39;vc.47" expl="type invariant" proved="true">
-  <proof prover="6"><result status="valid" time="0.24" steps="646"/></proof>
+  <proof prover="6"><result status="valid" time="0.37" steps="868"/></proof>
   </goal>
   <goal name="append&#39;vc.48" expl="type invariant" proved="true">
+  <proof prover="6"><result status="valid" time="0.24" steps="646"/></proof>
+  </goal>
+  <goal name="append&#39;vc.49" expl="type invariant" proved="true">
   <proof prover="5"><result status="valid" time="0.25" steps="42848"/></proof>
   </goal>
-  <goal name="append&#39;vc.49" expl="postcondition" proved="true">
+  <goal name="append&#39;vc.50" expl="postcondition" proved="true">
   <proof prover="6"><result status="valid" time="0.05" steps="68"/></proof>
   </goal>
-  <goal name="append&#39;vc.50" expl="postcondition" proved="true">
+  <goal name="append&#39;vc.51" expl="postcondition" proved="true">
   <proof prover="4" timelimit="1"><result status="valid" time="0.04" steps="200"/></proof>
   </goal>
-  <goal name="append&#39;vc.51" expl="postcondition" proved="true">
+  <goal name="append&#39;vc.52" expl="postcondition" proved="true">
   <proof prover="1"><result status="valid" time="0.07" steps="24620"/></proof>
   </goal>
-  <goal name="append&#39;vc.52" expl="assertion" proved="true">
+  <goal name="append&#39;vc.53" expl="postcondition" proved="true">
+  <proof prover="1"><result status="valid" time="0.13" steps="31329"/></proof>
+  </goal>
+  <goal name="append&#39;vc.54" expl="assertion" proved="true">
   <proof prover="1"><result status="valid" time="0.09" steps="17912"/></proof>
   <proof prover="6"><result status="valid" time="0.02" steps="34"/></proof>
   </goal>
-  <goal name="append&#39;vc.53" expl="assertion" proved="true">
+  <goal name="append&#39;vc.55" expl="assertion" proved="true">
   <proof prover="1"><result status="valid" time="0.08" steps="28574"/></proof>
   <proof prover="6"><result status="valid" time="0.03" steps="180"/></proof>
   </goal>
-  <goal name="append&#39;vc.54" expl="assertion" proved="true">
+  <goal name="append&#39;vc.56" expl="assertion" proved="true">
   <proof prover="6"><result status="valid" time="0.03" steps="39"/></proof>
   </goal>
-  <goal name="append&#39;vc.55" expl="assertion" proved="true">
+  <goal name="append&#39;vc.57" expl="assertion" proved="true">
   <proof prover="6"><result status="valid" time="0.02" steps="41"/></proof>
   </goal>
-  <goal name="append&#39;vc.56" expl="assertion" proved="true">
+  <goal name="append&#39;vc.58" expl="assertion" proved="true">
   <proof prover="1"><result status="valid" time="0.07" steps="21083"/></proof>
   <proof prover="6"><result status="valid" time="0.01" steps="38"/></proof>
   </goal>
-  <goal name="append&#39;vc.57" expl="index in array bounds" proved="true">
+  <goal name="append&#39;vc.59" expl="index in array bounds" proved="true">
   <proof prover="1"><result status="valid" time="0.11" steps="20564"/></proof>
   <proof prover="6"><result status="valid" time="0.03" steps="107"/></proof>
   </goal>
-  <goal name="append&#39;vc.58" expl="index in array bounds" proved="true">
+  <goal name="append&#39;vc.60" expl="index in array bounds" proved="true">
   <proof prover="1"><result status="valid" time="0.14" steps="23063"/></proof>
   <proof prover="6"><result status="valid" time="0.03" steps="105"/></proof>
   </goal>
-  <goal name="append&#39;vc.59" expl="index in array bounds" proved="true">
+  <goal name="append&#39;vc.61" expl="index in array bounds" proved="true">
   <proof prover="1"><result status="valid" time="0.16" steps="20564"/></proof>
   <proof prover="6"><result status="valid" time="0.03" steps="107"/></proof>
   </goal>
-  <goal name="append&#39;vc.60" expl="index in array bounds" proved="true">
+  <goal name="append&#39;vc.62" expl="index in array bounds" proved="true">
   <proof prover="1"><result status="valid" time="0.09" steps="23430"/></proof>
   <proof prover="6"><result status="valid" time="0.03" steps="113"/></proof>
   </goal>
-  <goal name="append&#39;vc.61" expl="index in array bounds" proved="true">
+  <goal name="append&#39;vc.63" expl="index in array bounds" proved="true">
   <proof prover="1"><result status="valid" time="0.22" steps="28315"/></proof>
   <proof prover="6"><result status="valid" time="0.03" steps="113"/></proof>
   </goal>
-  <goal name="append&#39;vc.62" expl="index in array bounds" proved="true">
+  <goal name="append&#39;vc.64" expl="index in array bounds" proved="true">
   <proof prover="1"><result status="valid" time="0.15" steps="24030"/></proof>
   <proof prover="6"><result status="valid" time="0.03" steps="129"/></proof>
   </goal>
-  <goal name="append&#39;vc.63" expl="index in array bounds" proved="true">
+  <goal name="append&#39;vc.65" expl="index in array bounds" proved="true">
   <proof prover="1"><result status="valid" time="0.18" steps="24378"/></proof>
   <proof prover="6"><result status="valid" time="0.03" steps="135"/></proof>
   </goal>
-  <goal name="append&#39;vc.64" expl="index in array bounds" proved="true">
+  <goal name="append&#39;vc.66" expl="index in array bounds" proved="true">
   <proof prover="1"><result status="valid" time="0.11" steps="24751"/></proof>
   <proof prover="6"><result status="valid" time="0.03" steps="141"/></proof>
   </goal>
-  <goal name="append&#39;vc.65" expl="type invariant" proved="true">
+  <goal name="append&#39;vc.67" expl="type invariant" proved="true">
   <proof prover="1"><result status="valid" time="0.09" steps="25284"/></proof>
   <proof prover="6"><result status="valid" time="0.04" steps="199"/></proof>
   </goal>
-  <goal name="append&#39;vc.66" expl="type invariant" proved="true">
+  <goal name="append&#39;vc.68" expl="type invariant" proved="true">
   <proof prover="1"><result status="valid" time="0.09" steps="15515"/></proof>
   <proof prover="6"><result status="valid" time="0.02" steps="72"/></proof>
   </goal>
-  <goal name="append&#39;vc.67" expl="type invariant" proved="true">
+  <goal name="append&#39;vc.69" expl="type invariant" proved="true">
   <proof prover="6"><result status="valid" time="0.02" steps="73"/></proof>
   </goal>
-  <goal name="append&#39;vc.68" expl="type invariant" proved="true">
+  <goal name="append&#39;vc.70" expl="type invariant" proved="true">
   <proof prover="1"><result status="valid" time="0.18" steps="32438"/></proof>
   <proof prover="6"><result status="valid" time="0.03" steps="76"/></proof>
   </goal>
-  <goal name="append&#39;vc.69" expl="type invariant" proved="true">
+  <goal name="append&#39;vc.71" expl="type invariant" proved="true">
   <proof prover="1"><result status="valid" time="0.10" steps="25593"/></proof>
   <proof prover="6"><result status="valid" time="0.03" steps="89"/></proof>
   </goal>
-  <goal name="append&#39;vc.70" expl="type invariant" proved="true">
+  <goal name="append&#39;vc.72" expl="type invariant" proved="true">
   <proof prover="1"><result status="valid" time="0.09" steps="17664"/></proof>
   <proof prover="6"><result status="valid" time="0.02" steps="85"/></proof>
   </goal>
-  <goal name="append&#39;vc.71" expl="type invariant" proved="true">
+  <goal name="append&#39;vc.73" expl="type invariant" proved="true">
   <proof prover="1"><result status="valid" time="0.28" steps="48289"/></proof>
   <proof prover="5"><result status="valid" time="0.31" steps="49244"/></proof>
   </goal>
-  <goal name="append&#39;vc.72" expl="type invariant" proved="true">
+  <goal name="append&#39;vc.74" expl="type invariant" proved="true">
   <proof prover="1"><result status="valid" time="0.24" steps="51236"/></proof>
   <proof prover="5"><result status="valid" time="0.35" steps="51298"/></proof>
   </goal>
-  <goal name="append&#39;vc.73" expl="type invariant" proved="true">
+  <goal name="append&#39;vc.75" expl="type invariant" proved="true">
   <proof prover="1"><result status="valid" time="0.17" steps="20170"/></proof>
   <proof prover="6"><result status="valid" time="0.02" steps="85"/></proof>
   </goal>
-  <goal name="append&#39;vc.74" expl="type invariant" proved="true">
+  <goal name="append&#39;vc.76" expl="type invariant" proved="true">
   <proof prover="1"><result status="valid" time="0.13" steps="28062"/></proof>
   <proof prover="6"><result status="valid" time="0.03" steps="85"/></proof>
   </goal>
-  <goal name="append&#39;vc.75" expl="type invariant" proved="true">
+  <goal name="append&#39;vc.77" expl="type invariant" proved="true">
   <proof prover="1"><result status="valid" time="0.09" steps="22555"/></proof>
   <proof prover="6"><result status="valid" time="0.03" steps="87"/></proof>
   </goal>
-  <goal name="append&#39;vc.76" expl="type invariant" proved="true">
+  <goal name="append&#39;vc.78" expl="type invariant" proved="true">
   <proof prover="1"><result status="valid" time="0.55" steps="83398"/></proof>
   <proof prover="6"><result status="valid" time="0.38" steps="725"/></proof>
   </goal>
-  <goal name="append&#39;vc.77" expl="type invariant" proved="true">
+  <goal name="append&#39;vc.79" expl="type invariant" proved="true">
   <proof prover="6"><result status="valid" time="0.29" steps="591"/></proof>
   </goal>
-  <goal name="append&#39;vc.78" expl="type invariant" proved="true">
+  <goal name="append&#39;vc.80" expl="type invariant" proved="true">
   <proof prover="6"><result status="valid" time="0.03" steps="89"/></proof>
   </goal>
-  <goal name="append&#39;vc.79" expl="type invariant" proved="true">
+  <goal name="append&#39;vc.81" expl="type invariant" proved="true">
   <proof prover="6"><result status="valid" time="0.05" steps="218"/></proof>
   </goal>
-  <goal name="append&#39;vc.80" expl="type invariant" proved="true">
+  <goal name="append&#39;vc.82" expl="type invariant" proved="true">
   <proof prover="6"><result status="valid" time="0.16" steps="636"/></proof>
   </goal>
-  <goal name="append&#39;vc.81" expl="type invariant" proved="true">
+  <goal name="append&#39;vc.83" expl="type invariant" proved="true">
   <proof prover="6"><result status="valid" time="0.15" steps="605"/></proof>
   </goal>
-  <goal name="append&#39;vc.82" expl="type invariant" proved="true">
+  <goal name="append&#39;vc.84" expl="type invariant" proved="true">
   <proof prover="6"><result status="valid" time="0.25" steps="889"/></proof>
   </goal>
-  <goal name="append&#39;vc.83" expl="type invariant" proved="true">
+  <goal name="append&#39;vc.85" expl="type invariant" proved="true">
   <proof prover="6"><result status="valid" time="0.36" steps="1155"/></proof>
   </goal>
-  <goal name="append&#39;vc.84" expl="postcondition" proved="true">
+  <goal name="append&#39;vc.86" expl="postcondition" proved="true">
   <proof prover="6"><result status="valid" time="0.04" steps="84"/></proof>
   </goal>
-  <goal name="append&#39;vc.85" expl="postcondition" proved="true">
+  <goal name="append&#39;vc.87" expl="postcondition" proved="true">
   <proof prover="4" timelimit="1"><result status="valid" time="0.01" steps="249"/></proof>
   </goal>
-  <goal name="append&#39;vc.86" expl="postcondition" proved="true">
+  <goal name="append&#39;vc.88" expl="postcondition" proved="true">
   <proof prover="1"><result status="valid" time="0.09" steps="25445"/></proof>
+  </goal>
+  <goal name="append&#39;vc.89" expl="postcondition" proved="true">
+  <proof prover="1"><result status="valid" time="0.06" steps="13568"/></proof>
   </goal>
  </transf>
  </goal>
@@ -596,16 +603,10 @@
  <goal name="Make.add&#39;vc" expl="VC for add">
  <transf name="split_vc" >
   <goal name="add&#39;vc.0" expl="precondition" proved="true">
-  <proof prover="1" obsolete="true"><result status="timeout" time="1.00" steps="233470"/></proof>
-  <proof prover="2" obsolete="true"><result status="timeout" time="1.00" steps="2175694"/></proof>
   <proof prover="4"><result status="valid" time="0.07" steps="388"/></proof>
-  <proof prover="5" obsolete="true"><result status="timeout" time="1.00" steps="177444"/></proof>
-  <proof prover="6" obsolete="true"><result status="timeout" time="1.00"/></proof>
   </goal>
   <goal name="add&#39;vc.1" expl="type invariant" proved="true">
-  <proof prover="0" obsolete="true"><result status="timeout" time="5.00"/></proof>
   <proof prover="1"><result status="valid" time="0.11" steps="30779"/></proof>
-  <proof prover="2" obsolete="true"><result status="timeout" time="1.00" steps="1840519"/></proof>
   <proof prover="4" timelimit="1"><result status="valid" time="0.03" steps="72"/></proof>
   </goal>
   <goal name="add&#39;vc.2" expl="type invariant" proved="true">
@@ -637,97 +638,107 @@
   <proof prover="4" timelimit="1"><result status="valid" time="0.06" steps="202"/></proof>
   </goal>
   <goal name="add&#39;vc.8" expl="type invariant" proved="true">
-  <proof prover="1"><result status="valid" time="0.11" steps="31603"/></proof>
-  <proof prover="2" obsolete="true"><result status="timeout" time="1.00" steps="1626204"/></proof>
-  <proof prover="3" obsolete="true"><result status="timeout" time="1.00"/></proof>
-  <proof prover="4" timelimit="1"><result status="valid" time="0.04" steps="78"/></proof>
-  <proof prover="5" obsolete="true"><result status="timeout" time="1.00" steps="199241"/></proof>
+  <proof prover="1"><result status="valid" time="0.11" steps="31744"/></proof>
+  <proof prover="4" timelimit="1"><result status="valid" time="0.04" steps="80"/></proof>
   </goal>
   <goal name="add&#39;vc.9" expl="type invariant" proved="true">
-  <proof prover="1"><result status="valid" time="0.25" steps="48492"/></proof>
-  <proof prover="4" timelimit="1"><result status="valid" time="0.27" steps="1421"/></proof>
+  <proof prover="1"><result status="valid" time="0.25" steps="48766"/></proof>
+  <proof prover="4" timelimit="1"><result status="valid" time="0.27" steps="1430"/></proof>
   </goal>
   <goal name="add&#39;vc.10" expl="type invariant">
+  <proof prover="1"><result status="timeout" time="1.00" steps="144788"/></proof>
+  <proof prover="2"><result status="timeout" time="1.00" steps="1656010"/></proof>
   <transf name="split_vc" >
    <goal name="add&#39;vc.10.0" expl="type invariant">
-   <proof prover="1" timelimit="10" memlimit="4000"><result status="timeout" time="10.00" steps="2437072"/></proof>
-   <proof prover="2" timelimit="10" memlimit="4000"><result status="timeout" time="10.00" steps="15997286"/></proof>
-   <proof prover="4"><result status="timeout" time="5.00"/></proof>
+   <proof prover="1" timelimit="30" memlimit="4000" obsolete="true"><result status="timeout" time="30.00" steps="5799193"/></proof>
+   <proof prover="2" timelimit="30" memlimit="4000" obsolete="true"><result status="timeout" time="30.00" steps="21309682"/></proof>
+   <proof prover="4" obsolete="true"><result status="timeout" time="5.00"/></proof>
+   <transf name="compute_in_goal" >
+    <goal name="add&#39;vc.10.0.0" expl="type invariant">
+    <proof prover="1" obsolete="true"><result status="timeout" time="1.00" steps="167683"/></proof>
+    <proof prover="2" obsolete="true"><result status="timeout" time="1.00" steps="1730133"/></proof>
+    <proof prover="4" obsolete="true"><result status="timeout" time="5.00"/></proof>
+    <transf name="case" arg1="(k = k1)">
+     <goal name="add&#39;vc.10.0.0.0" expl="true case (type invariant)" proved="true">
+     <proof prover="1"><result status="valid" time="0.15" steps="35724"/></proof>
+     </goal>
+     <goal name="add&#39;vc.10.0.0.1" expl="false case (type invariant)">
+     <proof prover="1" obsolete="true"><result status="timeout" time="1.00" steps="206936"/></proof>
+     <proof prover="2" obsolete="true"><result status="timeout" time="1.00" steps="1734154"/></proof>
+     <proof prover="4" obsolete="true"><result status="timeout" time="5.00"/></proof>
+     <transf name="destruct_term" arg1="(old_assoc @ k)">
+      <goal name="add&#39;vc.10.0.0.1.0" expl="false case (type invariant)">
+      <proof prover="1" timelimit="5"><result status="timeout" time="5.00" steps="2153364"/></proof>
+      <proof prover="2" timelimit="5"><result status="timeout" time="5.00" steps="7873092"/></proof>
+      <proof prover="4" obsolete="true"><result status="timeout" time="5.00"/></proof>
+      </goal>
+      <goal name="add&#39;vc.10.0.0.1.1" expl="false case (type invariant)">
+      <proof prover="1" obsolete="true"><result status="timeout" time="1.00" steps="197238"/></proof>
+      <proof prover="2" obsolete="true"><result status="timeout" time="1.00" steps="1799055"/></proof>
+      <proof prover="4" obsolete="true"><result status="timeout" time="5.00"/></proof>
+      </goal>
+     </transf>
+     </goal>
+    </transf>
+    </goal>
+   </transf>
    </goal>
    <goal name="add&#39;vc.10.1" expl="type invariant" proved="true">
-   <proof prover="4"><result status="valid" time="0.06" steps="383"/></proof>
+   <proof prover="4"><result status="valid" time="0.06" steps="387"/></proof>
    </goal>
   </transf>
   </goal>
   <goal name="add&#39;vc.11" expl="type invariant" proved="true">
-  <proof prover="1"><result status="valid" time="0.57" steps="89811"/></proof>
-  <proof prover="2" obsolete="true"><result status="timeout" time="1.00" steps="1556972"/></proof>
-  <proof prover="4" obsolete="true"><result status="timeout" time="5.00"/></proof>
-  <transf name="split_vc" >
-   <goal name="add&#39;vc.11.0" expl="type invariant">
-   <proof prover="1" obsolete="true"><result status="timeout" time="1.00" steps="154821"/></proof>
-   <proof prover="2" obsolete="true"><result status="timeout" time="1.00" steps="1510451"/></proof>
-   <proof prover="4" obsolete="true"><result status="timeout" time="5.00"/></proof>
-   </goal>
-   <goal name="add&#39;vc.11.1" expl="type invariant">
-   <proof prover="1" obsolete="true"><result status="timeout" time="1.00" steps="155772"/></proof>
-   <proof prover="2" obsolete="true"><result status="timeout" time="1.00" steps="1590288"/></proof>
-   <proof prover="4" obsolete="true"><result status="timeout" time="5.00"/></proof>
-   </goal>
-  </transf>
+  <proof prover="1"><result status="valid" time="0.57" steps="90053"/></proof>
   </goal>
   <goal name="add&#39;vc.12" expl="postcondition" proved="true">
-  <proof prover="1"><result status="valid" time="0.13" steps="35945"/></proof>
-  <proof prover="4" timelimit="1"><result status="valid" time="0.04" steps="84"/></proof>
+  <proof prover="1"><result status="valid" time="0.13" steps="36158"/></proof>
+  <proof prover="4" timelimit="1"><result status="valid" time="0.04" steps="86"/></proof>
   </goal>
   <goal name="add&#39;vc.13" expl="postcondition" proved="true">
-  <proof prover="1"><result status="valid" time="0.15" steps="35332"/></proof>
-  <proof prover="4" timelimit="1"><result status="valid" time="0.04" steps="90"/></proof>
+  <proof prover="1"><result status="valid" time="0.15" steps="35545"/></proof>
+  <proof prover="4" timelimit="1"><result status="valid" time="0.04" steps="92"/></proof>
   </goal>
   <goal name="add&#39;vc.14" expl="postcondition" proved="true">
-  <proof prover="1"><result status="valid" time="0.12" steps="34605"/></proof>
-  <proof prover="4" timelimit="1"><result status="valid" time="0.04" steps="219"/></proof>
+  <proof prover="1"><result status="valid" time="0.12" steps="34818"/></proof>
+  <proof prover="4" timelimit="1"><result status="valid" time="0.04" steps="221"/></proof>
   </goal>
   <goal name="add&#39;vc.15" expl="type invariant" proved="true">
-  <proof prover="1"><result status="valid" time="0.12" steps="31804"/></proof>
-  <proof prover="4" timelimit="1"><result status="valid" time="0.04" steps="80"/></proof>
+  <proof prover="1"><result status="valid" time="0.12" steps="32082"/></proof>
+  <proof prover="4" timelimit="1"><result status="valid" time="0.04" steps="81"/></proof>
   </goal>
   <goal name="add&#39;vc.16" expl="type invariant" proved="true">
-  <proof prover="1"><result status="valid" time="0.30" steps="54349"/></proof>
-  <proof prover="4" timelimit="1"><result status="valid" time="0.28" steps="2340"/></proof>
+  <proof prover="1"><result status="valid" time="0.30" steps="55227"/></proof>
+  <proof prover="4" timelimit="1"><result status="valid" time="0.52" steps="2596"/></proof>
   </goal>
   <goal name="add&#39;vc.17" expl="type invariant">
   <transf name="split_vc" >
    <goal name="add&#39;vc.17.0" expl="type invariant">
-   <proof prover="1" timelimit="10" memlimit="4000"><result status="timeout" time="10.00" steps="2483932"/></proof>
-   <proof prover="2" timelimit="10" memlimit="4000"><result status="timeout" time="10.00" steps="13445239"/></proof>
-   <proof prover="4"><result status="timeout" time="5.00"/></proof>
+   <proof prover="1"><result status="timeout" time="1.00" steps="223466"/></proof>
+   <proof prover="2"><result status="timeout" time="1.00" steps="1531685"/></proof>
+   <proof prover="4" obsolete="true"><result status="timeout" time="5.00"/></proof>
    </goal>
    <goal name="add&#39;vc.17.1" expl="type invariant">
-   <proof prover="1" timelimit="10" memlimit="4000"><result status="timeout" time="10.00" steps="2455192"/></proof>
-   <proof prover="2" timelimit="10" memlimit="4000"><result status="timeout" time="10.00" steps="9488062"/></proof>
-   <proof prover="4"><result status="timeout" time="5.00"/></proof>
+   <proof prover="1"><result status="timeout" time="1.00" steps="191998"/></proof>
+   <proof prover="2"><result status="timeout" time="1.00" steps="1506223"/></proof>
+   <proof prover="4" obsolete="true"><result status="timeout" time="5.00"/></proof>
    </goal>
   </transf>
   </goal>
   <goal name="add&#39;vc.18" expl="type invariant" proved="true">
-  <proof prover="1"><result status="valid" time="0.36" steps="65768"/></proof>
-  <proof prover="2" obsolete="true"><result status="timeout" time="1.00" steps="1460672"/></proof>
-  <proof prover="4" obsolete="true"><result status="timeout" time="5.00"/></proof>
+  <proof prover="1"><result status="valid" time="0.36" steps="66484"/></proof>
   </goal>
   <goal name="add&#39;vc.19" expl="postcondition" proved="true">
-  <proof prover="1"><result status="valid" time="0.13" steps="36305"/></proof>
-  <proof prover="4" timelimit="1"><result status="valid" time="0.03" steps="86"/></proof>
+  <proof prover="1"><result status="valid" time="0.13" steps="36654"/></proof>
+  <proof prover="4" timelimit="1"><result status="valid" time="0.03" steps="87"/></proof>
   </goal>
   <goal name="add&#39;vc.20" expl="postcondition" proved="true">
-  <proof prover="1"><result status="valid" time="0.16" steps="37378"/></proof>
-  <proof prover="2" obsolete="true"><result status="timeout" time="1.00" steps="1847442"/></proof>
-  <proof prover="4" timelimit="1"><result status="valid" time="0.05" steps="326"/></proof>
-  <proof prover="5" obsolete="true"><result status="timeout" time="1.00" steps="177867"/></proof>
+  <proof prover="1"><result status="valid" time="0.16" steps="37935"/></proof>
+  <proof prover="4" timelimit="1"><result status="valid" time="0.05" steps="330"/></proof>
   </goal>
   <goal name="add&#39;vc.21" expl="postcondition" proved="true">
-  <proof prover="1"><result status="valid" time="0.14" steps="34892"/></proof>
-  <proof prover="4" timelimit="1"><result status="valid" time="0.06" steps="223"/></proof>
+  <proof prover="1"><result status="valid" time="0.14" steps="35219"/></proof>
+  <proof prover="4" timelimit="1"><result status="valid" time="0.06" steps="227"/></proof>
   </goal>
  </transf>
  </goal>

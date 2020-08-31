@@ -139,6 +139,7 @@ module DLList
     ensures { t.size >= (old t).size }
     returns { i, _ -> forall j. t.age j = if j = i then 0 else old (t.age j) + 1 }
     returns { i, _ -> t.cap - t.size <= i < t.cap }
+    returns { _, None -> forall j. t.cap - t.size <= j < t.cap -> t.age j < t.cap | _ -> true }
   =
   let removed =
     if t.size = 0 then (
@@ -168,7 +169,6 @@ module DLList
       assert {t.prev[t.last] <> -1};
       let removed = Some t.contents[t.last] in
       let old_last = t.last in
-      (* FIXME *)
       t.last <- t.prev[old_last];
       t.contents[old_last] <- v;
       t.next[t.prev[old_last]] <- -1;
@@ -189,10 +189,10 @@ module DLList
     ensures { t.size = (old t).size }
     ensures { t.cap - t.size <= result < t.cap }
     ensures { forall k. t.cap - t.size <= k < t.cap ->
-    age t k =
-      if k = i then 0
-      else if age (old t) k < age (old t) i then age (old t) k + 1
-      else age (old t) k }
+      age t k =
+        if k = i then 0
+        else if age (old t) k < age (old t) i then age (old t) k + 1
+        else age (old t) k }
   =
   if i = t.first then return i;
   if i <> t.last (* && i <> t.first *) then (
@@ -252,15 +252,10 @@ module Impl
       mutable ghost age: K.key -> int
     }
     invariant { cap > 0 }
-(*
-    invariant { forall k. if mem k tbl then let _,v = tbl k in assoc k = Some v
-                                       else assoc k = None }
-*)
     invariant { forall k. match assoc k with
       | None -> not mem k tbl
       | Some v -> mem k tbl && let _, v' = tbl k in v = v'
     end }
-    (*invariant { DLList.size lst = size tbl }*)
     invariant { forall k. age k >= cap <-> assoc k = None }
     invariant { forall k. mem k tbl -> 
       let i, _ = tbl k in DLList.cap lst - DLList.size lst <= i < DLList.cap lst 
@@ -349,7 +344,9 @@ module Impl
     | None -> (
       let index, removed = DLList.append t.lst k in
       match removed with
-      | None -> t.assoc <- (fun x -> if K.equal k x then Some v else old_assoc x);
+      | None -> (
+        t.assoc <- (fun x -> if K.equal k x then Some v else old_assoc x);
+      )
       | Some key -> (
         H.remove t.tbl key;
         t.assoc <- (fun x ->
