@@ -139,7 +139,8 @@ module DLList
     ensures { t.size >= (old t).size }
     returns { i, _ -> forall j. t.age j = if j = i then 0 else old (t.age j) + 1 }
     returns { i, _ -> t.cap - t.size <= i < t.cap }
-    returns { _, None -> forall j. t.cap - t.size <= j < t.cap -> t.age j < t.cap | _ -> true }
+    returns { _, None -> forall j. t.cap - t.size <= j < t.cap -> old t.size < t.cap | _ -> true }
+    returns { _, None -> forall j. t.cap - old t.size <= j < t.cap -> old t.age j < t.cap - 1 | _ -> true }
   =
   let removed =
     if t.size = 0 then (
@@ -162,11 +163,6 @@ module DLList
       None
     )
     else (* the structure is full *) (
-      assert { t.size = t.cap };
-      assert { t.next[t.first] = -1 <-> t.prev[t.last] = -1 <-> t.cap = 1 };
-      assert { t.cap > 1 };
-      assert { t.first <> t.last };
-      assert {t.prev[t.last] <> -1};
       let removed = Some t.contents[t.last] in
       let old_last = t.last in
       t.last <- t.prev[old_last];
@@ -205,15 +201,12 @@ module DLList
   );
   t.prev[t.first] <- i;
   t.next[i] <- t.first;
-  assert { t.prev[t.next[i]] = i };
   t.first <- i;
   let old_age = t.age in
-  assert { forall i. t.cap - t.size <= i < t.cap -> 0 <= old_age i };
   let new_age = (fun j -> if j = to_int i then 0
             else if old_age j < old_age (to_int i) then old_age j + 1
             else old_age j) in
   t.age <- new_age;
-  assert { forall i. t.cap - t.size <= i < t.cap -> 0 <= t.age i };
   t.first
 
   let get (t: t 'a) (i: int63) : 'a
@@ -260,6 +253,7 @@ module Impl
     invariant { forall k. mem k tbl -> 
       let i, _ = tbl k in DLList.cap lst - DLList.size lst <= i < DLList.cap lst 
     }
+   invariant { forall k. mem k tbl -> let i, _ = tbl k in DLList.age lst i = age k }
     by {
       tbl = H.create 0;
       lst = DLList.create K.witness 2;
@@ -345,6 +339,7 @@ module Impl
       let index, removed = DLList.append t.lst k in
       match removed with
       | None -> (
+        assert { forall x. old assoc t x <> None -> old t.age x < t.cap - 1};
         t.assoc <- (fun x -> if K.equal k x then Some v else old_assoc x);
       )
       | Some key -> (
